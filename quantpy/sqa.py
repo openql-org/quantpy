@@ -1,6 +1,11 @@
 from numpy import *
 
-def run(N,kT,G,Gfinish,m,J,h,tau):
+def run(m,J,h):
+	kT = 0.02
+	G = 5
+	Gfinish = 0.02
+	N = len(h)
+	tau = 0.99
 	q = []
 
 	for i in range(m):
