@@ -1,8 +1,11 @@
 from numpy import *
 
 #run sqa algorithm with params
-def run(kT,G,m,h,J,c,rep):
+def run(kT,G,m,mat,rep):
 
+	h = mat[0]
+	J = mat[1]
+	c = mat[2]
 	N = len(h)
 	tau = 0.99
 	Gfin = 0.02
@@ -13,15 +16,15 @@ def run(kT,G,m,h,J,c,rep):
 
 	for j in range(rep):
 		q = []
-		for i in range(N):
+		for i in range(m):
 			q.append(random.choice([-1,1],N))
 
 		while G > Gfin:
 			for i in range(N*m):
 				x = random.randint(N)
 				y = random.randint(m)
-				dE = (2*q[y][x]*(h[x]+q[y][(N+x-1)%N]*J[x][(N+x-1)%N]+q[y][(x+1)%N]*J[x][(x+1)%N]))/m
-				dE += q[y][x]*(q[(m+y-1)%m][x]+q[(y+1)%m][x])*log(1/tanh(G/kT/m))/kT
+				dE = (2*q[y][x]*(h[x]+q[y][(N+x-1)%N]*J[x][(N+x-1)%N]+q[y][(x+1)%N]*J[x][(x+1)%N]))*1.0/m
+				dE += q[y][x]*(q[(m+y-1)%m][x]+q[(y+1)%m][x])*log(1/tanh(G/kT/m))*1.0/kT
 				if exp(-dE/kT)>random.rand():
 					q[y][x] = -q[y][x]
 			G*=tau
