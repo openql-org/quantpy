@@ -1,35 +1,37 @@
 from numpy import *
 
-def run(N,kT,G,Gfinish,m,qubo,tau):
+#run sqa algorithm with params
+def run(N,kT,G,m,h,J,c,rep):
 
-	h = []
-	J = [[0] * N for i in range(N)]
-
-	# qubo to ising hamiltonian 
-	for j in range(N):
-		Jsum = 0
-
-		for i in range(j+1,N):
-			J[j][i] = qubo[j][i]/4
-			J[i][j] = qubo[j][i]/4
-			Jsum += qubo[j][i]
-		h.append(qubo[j][0]/2 + Jsum)
-
+	tau = 0.9
+	Gfin = 0.01
+	qarr = []
+	Earr = []
 
 	# simulated quantum annealing simulator using quantum monte carlo & metropolis
-	q = []
 
-	for k in range(m):
-		q.append(random.choice([-1,1],N))
+	for j in range(rep):
+		q = []
+		for i in range(N):
+			q.append(random.choice([-1,1],N))
 
-	while G>Gfinish:
-		for l in range(N*m):
-			x = random.randint(N)
-			y = random.randint(m)
-			dE = (2*q[y][x]*(h[x]+q[y][(N+x-1)%N]*J[x][(N+x-1)%N]+q[y][(x+1)%N]*J[x][(x+1)%N]))/m
-			dE += q[y][x]*(q[(m+y-1)%m][x]+q[(y+1)%m][x])*log(1/tanh(G/kT/m))/kT
-			if exp(-dE/kT)>random.rand():
-				q[y][x] = -q[y][x]
-		G*=tau
+		while G > Gfin:
+			for i in range(N*m):
+				x = random.randint(N)
+				y = random.randint(m)
+				dE = (2*q[y][x]*(h[x]+q[y][(N+x-1)%N]*J[x][(N+x-1)%N]+q[y][(x+1)%N]*J[x][(x+1)%N]))/m
+				dE += q[y][x]*(q[(m+y-1)%m][x]+q[(y+1)%m][x])*log(1/tanh(G/kT/m))/kT
+				if exp(-dE/kT)>random.rand():
+					q[y][x] = -q[y][x]
+			G*=tau
 
-	print(q)
+		E = 0
+		for a in range(N):
+			E += h[a]*q[0][a]
+			for b in range(a+1,N):
+				E += J[a][b]*q[0][a]*q[0][b]
+
+		qarr.append(q)
+		Earr.append(E+c)
+
+	print(array([qarr,Earr]))
