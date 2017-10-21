@@ -2,11 +2,11 @@
 def geth(N,qubo):
         h = []
         for j in range(N):
-                Jsum = 0
-                for i in range(j+1,N):
+                 Jsum = 0
+                 for i in range(j+1,N):
                         Jsum += qubo[j][i] 
-                h.append(qubo[j][j]*1.0/2 + Jsum)
-	return h
+                 h.append(qubo[j][j]*1.0/2 + Jsum)
+        return h
 
 #get Jij from qubo
 def getj(N,qubo):
@@ -21,11 +21,10 @@ def getj(N,qubo):
 
 #get constant term from qubo
 def getc(N,qubo):
-	Jsum = 0
-	hsum = 0
+        Jsum = 0
+        hsum = 0
         for j in range(N):
-		hsum += qubo[j][j]*1.0/2
-                for i in range(j+1,N):
-			Jsum += qubo[j][i]*1.0/4
-
+          hsum += qubo[j][j]*1.0/2
+          for i in range(j+1,N):
+            Jsum += qubo[j][i]*1.0/4
         return Jsum+hsum 
