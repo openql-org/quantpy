@@ -18,6 +18,9 @@ def getMat(qubo):
                         J[i][j] = r*1.0/4
 			Jsum += r*1.0/4
 
+		for i in range(0,j):
+			sum += qubo[j][i]
+
 		s = qubo[j][j]
 		hsum += s*1.0/2
                 h.append(s*1.0/2 + sum)
