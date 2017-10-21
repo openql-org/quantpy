@@ -4,7 +4,7 @@ def geth(N,qubo):
                 Jsum = 0
                 for i in range(j+1,N):
                         Jsum += qubo[j][i] 
-                h.append(qubo[j][0]*1.0/2 + Jsum)
+                h.append(qubo[j][j]*1.0/2 + Jsum)
 	return h
 
 def getj(N,qubo):
@@ -16,3 +16,13 @@ def getj(N,qubo):
                         J[i][j] = r*1.0/4
 
         return J
+
+def getc(N,qubo):
+	Jsum = 0
+	hsum = 0
+        for j in range(N):
+		hsum += qubo[j][j]*1.0/2
+                for i in range(j+1,N):
+			Jsum += qubo[j][i]*1.0/4
+
+        return Jsum+hsum 
