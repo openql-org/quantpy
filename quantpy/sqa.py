@@ -1,10 +1,11 @@
 from numpy import *
 
 #run sqa algorithm with params
-def run(N,kT,G,m,h,J,c,rep):
+def run(kT,G,m,h,J,c,rep):
 
-	tau = 0.9
-	Gfin = 0.01
+	N = len(h)
+	tau = 0.99
+	Gfin = 0.02
 	qarr = []
 	Earr = []
 
