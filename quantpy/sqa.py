@@ -1,5 +1,6 @@
 from numpy import *
 
+#run sqa algorithm with params
 def run(N,kT,G,m,h,J,c,rep):
 
 	tau = 0.9
