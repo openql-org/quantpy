@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-from quantpy import sqa
 import numpy as np
+import qubo
+import sqa
 
-sqa.run(4,0.02,3,0.02,3,np.array([[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1]]),0.6)
+#params are number of qubits, temperature, Gamma, trotter number, qubo matrix, number of trials
+mat = np.array([[0,1,1,1],[1,0,1,1],[1,1,0,1],[1,1,1,0]])
+sqa.run(4,0.02,3,3,qubo.geth(4,mat),qubo.getj(4,mat),qubo.getc(4,mat),10)
