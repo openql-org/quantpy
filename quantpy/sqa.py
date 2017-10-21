@@ -1,24 +1,10 @@
 from numpy import *
 
-def run(N,kT,G,m,qubo,rep):
+def run(N,kT,G,m,h,J,rep):
 
 	tau = 0.9
 	Gfin = 0.01
-	h = []
-	J = [[0] * N for i in range(N)]
 	qarr = []
-
-	# qubo to ising hamiltonian 
-	for j in range(N):
-		Jsum = 0
-
-		for i in range(j+1,N):
-			r = qubo[j][i]
-			J[j][i] = r/4
-			J[i][j] = r/4
-			Jsum += r 
-		h.append(qubo[j][0]/2 + Jsum)
-
 
 	# simulated quantum annealing simulator using quantum monte carlo & metropolis
 
