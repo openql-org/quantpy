@@ -1,20 +1,20 @@
 from numpy import *
 
-def run(N,kT,G,m,h,J,rep):
+def run(N,kT,G,m,h,J,c,rep):
 
 	tau = 0.9
 	Gfin = 0.01
 	qarr = []
+	Earr = []
 
 	# simulated quantum annealing simulator using quantum monte carlo & metropolis
 
 	for j in range(rep):
 		q = []
-
-		for i in range(m):
+		for i in range(N):
 			q.append(random.choice([-1,1],N))
 
-		while G>Gfin:
+		while G > Gfin:
 			for i in range(N*m):
 				x = random.randint(N)
 				y = random.randint(m)
@@ -24,5 +24,13 @@ def run(N,kT,G,m,h,J,rep):
 					q[y][x] = -q[y][x]
 			G*=tau
 
+		E = 0
+		for a in range(N):
+			E += h[a]*q[0][a]
+			for b in range(a+1,N):
+				E += J[a][b]*q[0][a]*q[0][b]
+
 		qarr.append(q)
-	print(qarr)
+		Earr.append(E+c)
+
+	print(array([qarr,Earr]))
