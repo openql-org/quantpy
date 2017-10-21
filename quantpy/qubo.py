@@ -1,3 +1,4 @@
+#get h from qubo
 def geth(N,qubo):
         h = []
         for j in range(N):
@@ -7,6 +8,7 @@ def geth(N,qubo):
                 h.append(qubo[j][j]*1.0/2 + Jsum)
 	return h
 
+#get Jij from qubo
 def getj(N,qubo):
         J = [[0]*N for i in range(N)]
         for j in range(N):
@@ -17,6 +19,7 @@ def getj(N,qubo):
 
         return J
 
+#get constant term from qubo
 def getc(N,qubo):
 	Jsum = 0
 	hsum = 0
