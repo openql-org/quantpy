@@ -27,5 +27,4 @@ def getc(N,qubo):
           hsum += qubo[j][j]*1.0/2
           for i in range(j+1,N):
             Jsum += qubo[j][i]*1.0/4
-
         return Jsum+hsum 
