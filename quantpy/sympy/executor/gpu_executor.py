@@ -6,12 +6,17 @@
 Todo:
 * Sometimes the final result needs to be expanded, we should do this by hand.
 """
-from quantpy.sympy._quantumexecutor as BaseQuantumExecutor
+import qiskit
+
+from quantpy.sympy.executor._quantumexecutor import BaseQuantumExecutor
+
 
 class GPUExecutor(BaseQuantumExecutor):
-    def execute(circuit, **options):
-    """
-    """
-        qasm = to_qasm(circuit)
+    def execute(self, circuit, **options):
+        """
+        """
+        qasm = self.to_qasm(circuit)
         json = qiskit.compile(qasm, format='json')
+        #Todo: feed json to GPU program
 
+        return None

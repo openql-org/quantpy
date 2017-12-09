@@ -1,47 +1,21 @@
 # -*- coding:utf-8 -*-
 # vim:ts=4:sw=4:sts=4:et:ai:ff=unix:fenc=utf-8
 
+"""Base class for quantum executor
+
 """
+from abc import abstractmethod
 
-Todo:
-* Sometimes the final result needs to be expanded, we should do this by hand.
-"""
+import sympy
 
-from quantpy.sympy._quantumexecutor as BaseQuantumExecutor
 
-class IBMQExecutor(BaseQuantumExecutor):
-    # def __init__(self, quantum_program=None, api_key=None, backend='local_qasm_simulator', shots=1024):
-    #     super().__init__()
-    #     if quantum_program is None:
-    #         quantum_program = qiskit.QuantumProgram()
-    #     self.qp = quantum_program
-    #     if api_key:
-    #         qp.set_api(api_key, 'https://quantumexperience.ng.bluemix.net/api')
-    #     self.backend = backend
-    #     self.shots = shots
+class BaseQuantumExecutor:
 
-    def execute(circuit, **options):
-        """
-        """
-        qasm = to_qasm(circuit)
-        
-        api = IBMQuantumExperience("token", config)
-        device = 'simulator'
-        shots = 1024
-        
-        api.run_experiment(qasm,
-                          device,
-                          shots,
-                          name='My First Experiment',
-                          timeout=60)
-     
-    # def execute(self, circuit, **options):
-    #     qasm = sympy_to_qasm(circuit)
-    #     name = self.qp.load_qasm_text(qasm)
-    #     qobj = self.qp.compile(name, backend=self.backend, shots=self.shots)
-    #     return self.qp.run(qobj).get_counts(name)
+    @abstractmethod
+    def execute(self, circuit, **options):
+        return None
 
-    def to_qasm(sympy_expr):
+    def to_qasm(self, sympy_expr):
         """
         """
         qasm = 'OPENQASM 2.0;\ninclude "qelib1.inc";\n'
@@ -78,3 +52,5 @@ class IBMQExecutor(BaseQuantumExecutor):
         for i in range(len(qubit)):
             qasm += 'measure qr[{0}] -> cr[{0}];\n'.format(i)
         return qasm
+        
+
