@@ -13,7 +13,7 @@ from quantpy.sympy.executor._quantumexecutor import BaseQuantumExecutor
 
 class IBMQExecutor(BaseQuantumExecutor):
     token = None
-    backend = 'simulator'
+    backend = 'ibmqx_qasm_simulator'
     shots = 1024
     api = None
 
@@ -22,7 +22,6 @@ class IBMQExecutor(BaseQuantumExecutor):
         """
         """
         qasm = self.to_qasm(circuit)
-        
         self.api = IBMQuantumExperience(self.token)
         return self.api.run_experiment(qasm,
                           self.backend,
