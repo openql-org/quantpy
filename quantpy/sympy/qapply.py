@@ -3,20 +3,14 @@
 
 """Logic for applying operators to states.
 
-Usage:
-quantpy.qapply(circuit, executor=RegettiExecutor())
-quantpy.qapply(circuit, executor=IBMQExecutor())
-quantpy.qapply(circuit, executor=SymPyExecutor())
-
 Todo:
 * Sometimes the final result needs to be expanded, we should do this by hand.
 """
 
-from ._quantumexecutor import *
+from .executor.sympy_executor import SymPyExecutor
 
 def qapply(circuit, **options):
     """
     """
-    executor = SymPyExecutor
-    # executor = options.get['executor']
-    executor.execute(circuit, options)
+    executor = options.get('executor', SymPyExecutor())
+    return executor.execute(circuit, **options)
