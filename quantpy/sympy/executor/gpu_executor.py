@@ -8,7 +8,7 @@ Todo:
 """
 import qiskit
 
-from quantpy.sympy.executor._quantumexecutor import BaseQuantumExecutor
+from quantpy.sympy.executor._base_quantum_executor import BaseQuantumExecutor
 
 
 class GPUExecutor(BaseQuantumExecutor):

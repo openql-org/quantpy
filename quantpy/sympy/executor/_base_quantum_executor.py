@@ -23,7 +23,7 @@ class BaseQuantumExecutor:
         qubit = sympy_expr.args[-1]
         assert isinstance(qubit, sympy.physics.quantum.qubit.Qubit), 'Sorry. Now, supported U*U*U*Qubit format'
         qasm += 'qreg qr[{0}];\ncreg cr[{0}];\n'.format(len(qubit))
-        for i,qb in enumerate(reversed(qubit.args)):
+        for i, qb in enumerate(reversed(qubit.args)):
             if isinstance(qb, sympy.numbers.One):
                 qasm += 'x qr[{}];\n'.format(i)
         for gate in reversed(sympy_expr.args[:-1]):
@@ -52,5 +52,3 @@ class BaseQuantumExecutor:
         for i in range(len(qubit)):
             qasm += 'measure qr[{0}] -> cr[{0}];\n'.format(i)
         return qasm
-        
-
