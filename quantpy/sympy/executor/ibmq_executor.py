@@ -12,11 +12,12 @@ from quantpy.sympy.executor._quantumexecutor import BaseQuantumExecutor
 
 
 class IBMQExecutor(BaseQuantumExecutor):
-    token = None
-    backend = 'ibmqx_qasm_simulator'
-    shots = 1024
-    api = None
 
+    def __init__(self):
+        self.token = None
+        self.backend = 'ibmqx_qasm_simulator'
+        self.shots = 1024
+        self.api = None
 
     def execute(self, circuit, **options):
         """
