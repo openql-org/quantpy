@@ -7,7 +7,7 @@ Todo:
 * Sometimes the final result needs to be expanded, we should do this by hand.
 """
 
-from .executor.sympy_executor import SymPyExecutor
+from quantpy.sympy.executor.sympy_executor import SymPyExecutor
 
 def qapply(circuit, **options):
     """
