@@ -23,6 +23,7 @@ class IBMQExecutor(BaseQuantumExecutor):
         """
         """
         qasm = self.to_qasm(circuit)
+        print(qasm)
         self.api = IBMQuantumExperience(self.token)
         return self.api.run_experiment(qasm,
                           self.backend,
