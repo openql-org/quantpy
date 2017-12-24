@@ -7,6 +7,7 @@
 from abc import abstractmethod
 
 import sympy
+from qiskit.qasm._qasmparser import QasmParser
 
 
 class BaseQuantumExecutor:
