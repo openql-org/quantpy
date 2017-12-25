@@ -11,6 +11,8 @@ from qiskit.qasm._qasmparser import QasmParser
 
 
 class BaseQuantumExecutor:
+    def __init__(self):
+        pass
 
     @abstractmethod
     def execute(self, circuit, **options):
