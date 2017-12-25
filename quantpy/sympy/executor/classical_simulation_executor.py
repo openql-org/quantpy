@@ -16,6 +16,7 @@ from quantpy.sympy.executor._base_quantum_executor import BaseQuantumExecutor
 class ClassicalSimulationExecutor(BaseQuantumExecutor):
 
     def __init__(self):
+        super().__init__()
         self.simulator = None
 
     def execute(self, circuit, **options):
