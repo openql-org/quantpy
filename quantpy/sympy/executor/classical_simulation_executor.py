@@ -22,8 +22,9 @@ class ClassicalSimulationExecutor(BaseQuantumExecutor):
 
     def execute(self, circuit, **options):
         """
-        execute sympy-circuit with classical simulator
-        we use numpy simulator as default
+        Execute sympy-circuit with classical simulator
+        We use numpy simulator as default
+        @param circuit sympy object to simulate
         """
         qasm = self.to_qasm(circuit)
         self.simulator = NumpySimulator()
@@ -36,6 +37,11 @@ class ClassicalSimulationExecutor(BaseQuantumExecutor):
         return None
 
     def simulate(self, circuitJson):
+        """
+        Simulate qasm script with json format
+        @param circuitJson qasm in json format
+        """
+
         sim = self.simulator
 
         numQubit = circuitJson["header"]["number_of_qubits"]
@@ -103,4 +109,8 @@ class ClassicalSimulationExecutor(BaseQuantumExecutor):
                 raise ValueError("Op:{} is contained in basis gates, but not supported in simulator".format(operation))
 
     def getStateStr(self):
+        """
+        Return string representation of the current quantum state
+        @return string representation of the current quantum state
+        """
         return str(self.simulator)

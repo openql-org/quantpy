@@ -13,7 +13,6 @@ class NumpySimulator(BaseSimulator):
     def __init__(self,verbose=False):
         """
         @param verbose : output verbose comments for debug (default: false)
-        @return None
         """
         super().__init__()
         self.verbose = verbose
@@ -21,6 +20,11 @@ class NumpySimulator(BaseSimulator):
         self.basis_gates = ["x","z","y","h","s","t","cx","cz","m0","m1"]
 
     def initialize(self,n):
+        """
+        Initialize quantum states
+
+        @param n : number of qubits
+        """
         self.n = n
         self.dim = 2**n
         self.state = np.zeros(self.dim,dtype=np.complex128)
@@ -30,14 +34,15 @@ class NumpySimulator(BaseSimulator):
 
     def apply(self,gate,target,control=None,theta=None,param=None,update=True):
         """
-        apply quantum gate to the qubit(s)
+        Apply quantum gate to the qubit(s)
 
         @param gate : string or cupy kernel of applying gate
         @param target : target qubit index or indices
         @param control : control qubit index or indices (default: empty list)
         @param theta : rotation angle, used in rotation gate (default: None)
         @param params : description of unitary operation (default: empty list)
-        @update : The calculated state is placed in buffer-state. If update is Ture, swap current state with buffer after calculation. (default: True)
+        @param update : the calculated state is placed in buffer-state. If update is Ture, swap current state with buffer after calculation. (default: True)
+        @return return None if update==True, return trace value if update==False
         """
         if not hasattr(target,"__iter__"):
             target = [target]
@@ -106,7 +111,7 @@ class NumpySimulator(BaseSimulator):
 
     def update(self):
         """
-        swap buffer-state with the current state
+        Swap buffer-state with the current state
         """
         self.state,self.nstate = self.nstate,self.state
         self.currentTrace = None
@@ -114,7 +119,8 @@ class NumpySimulator(BaseSimulator):
     def trace(self,buffer=False):
         """
         take trace of the quantum state
-        @buffer : calculate trace of buffer-state (default: False)
+        @param buffer : calculate trace of buffer-state (default: False)
+        @return trace value of quantum states
         """
         if(self.verbose): print("Calculate trace")
         if(buffer):
@@ -126,8 +132,8 @@ class NumpySimulator(BaseSimulator):
 
     def normalize(self,eps=1e-16):
         """
-        normalize quantum state
-        @eps : if trace is smaller than eps, raise error for avoiding Nan (default: 1e-16)
+        Normalize quantum state
+        @param eps : if trace is smaller than eps, raise error for avoiding Nan (default: 1e-16)
         """
         if(self.currentTrace is None):
             self.trace()
@@ -139,16 +145,16 @@ class NumpySimulator(BaseSimulator):
 
     def asnumpy(self):
         """
-        recieve quantum state as numpy matrix.
-        Do nothing in numpy
+        Return the current quantum state as numpy array.
+        @return numpy array of the current quantum state
         """
         return self.state
 
     def __str__(self,eps=1e-10):
         """
-        overload string function
-        return bra-ket representation of current quantum state (very slow when n is large)
-        @eps : ignore amplitude smaller than eps when we convert state to str
+        Return bra-ket representation of current quantum state (very slow when n is large)
+        @param eps : ignore amplitude smaller than eps when we convert state to str
+        @return string representation of quantum states
         """
         fst = True
         ret = ""
@@ -165,4 +171,8 @@ class NumpySimulator(BaseSimulator):
         return ret
 
     def __bound(self,ind):
+        """
+        Check whether qubit index is valid
+        @return return true if valid
+        """
         return (0<=ind and ind<self.n)
