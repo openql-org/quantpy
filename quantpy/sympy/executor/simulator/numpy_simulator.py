@@ -1,28 +1,31 @@
 
 """
-class of quantum circuit simulator
+Class for simulation of unitary universal quantum circuits.
+Use numpy-native functions for simulation
 """
 
 import numpy as np
 
-from quantpy.sympy.executor.local.simulator._base_simulator import BaseSimulator
+from quantpy.sympy.executor.simulator._base_simulator import BaseSimulator
 
+class NumpySimulator(BaseSimulator):
 
-class CpuSimulator(BaseSimulator):
-    def __init__(self,n,verbose=False):
+    def __init__(self,verbose=False):
         """
-        @param n : number of qubit
         @param verbose : output verbose comments for debug (default: false)
         @return None
         """
-        super.__init__()
+        super().__init__()
+        self.verbose = verbose
+        self.currentTrace = None
+        self.basis_gates = ["x","z","y","h","s","t","cx","cz","m0","m1"]
+
+    def initialize(self,n):
         self.n = n
         self.dim = 2**n
         self.state = np.zeros(self.dim,dtype=np.complex128)
         self.state[0]=1.
         self.nstate = np.zeros_like(self.state)
-        self.verbose = verbose
-        self.currentTrace = None
         self.indices = np.arange(self.dim,dtype=np.uint32)
 
     def apply(self,gate,target,control=None,theta=None,param=None,update=True):
@@ -33,68 +36,65 @@ class CpuSimulator(BaseSimulator):
         @param target : target qubit index or indices
         @param control : control qubit index or indices (default: empty list)
         @param theta : rotation angle, used in rotation gate (default: None)
-        @param theta : rotation angle, used in rotation gate (default: None)
         @param params : description of unitary operation (default: empty list)
         @update : The calculated state is placed in buffer-state. If update is Ture, swap current state with buffer after calculation. (default: True)
         """
-        if target not in [list,np.ndarray]:
+        if not hasattr(target,"__iter__"):
             target = [target]
-        if control not in [list,np.ndarray]:
+        if not hasattr(control,"__iter__"):
             control = [control]
-        gate = gate.upper()
+        gate = gate.lower()
 
-        if(gate.upper() =="X"):
+        if(gate =="x"):
             mask = 1<<target[0]
             self.nstate = self.state[self.indices^mask]
-        elif(gate.upper() == "Z"):
+        elif(gate == "z"):
             mask = 1<<target[0]
             self.nstate = self.state * ((self.indices & mask == 0)*2-1)
-        elif(gate.upper() == "Y"):
+        elif(gate == "y"):
             mask = 1<<target[0]
             self.nstate = (self.state * ((self.indices & mask == 0)*2-1) * 1j)[self.indices^mask]
-        elif(gate.upper() == "H"):
+        elif(gate == "h"):
             mask = 1<<target[0]
             self.nstate = (self.state * ((self.indices & mask == 0)*2-1) + self.state[self.indices^mask])/np.sqrt(2.)
-        elif(gate.upper() == "S"):
+        elif(gate == "s"):
             mask = 1<<target[0]
             self.nstate = np.copy(self.state)
             self.nstate[self.indices & mask != 0] *= 1j
-        elif(gate.upper() == "T"):
+        elif(gate == "t"):
             mask = 1<<target[0]
             self.nstate = np.copy(self.state)
             self.nstate[self.indices & mask != 0] *= (1+1j)/np.sqrt(2.)
-        elif(gate.upper() == "M0"):
+        elif(gate == "m0"):
             mask = 1<<target[0]
             self.nstate = np.copy(self.state)
             self.nstate[self.indices & mask != 0] = 0.
-        elif(gate.upper() == "M1"):
+        elif(gate == "m1"):
             mask = 1<<target[0]
             self.nstate = np.copy(self.state)
             self.nstate[self.indices & mask == 0] = 0.
-        elif(gate.upper() == "CX"):
+        elif(gate == "cx"):
             mask1 = 1<<target[0]
             mask2 = 1<<control[0]
             self.nstate = np.copy(self.state)
             self.nstate[self.indices & mask1 != 0] = self.nstate[ self.indices[self.indices & mask1 != 0] ^ mask2 ]
-        elif(gate.upper() == "CZ"):
+        elif(gate == "cz"):
             mask1 = 1<<target[0]
             mask2 = 1<<control[0]
             self.nstate = (self.state *   (1-np.logical_and( (self.indices & mask1 != 0) , (self.indices & mask2 != 0))*2)   )
-        elif(gate.upper() == "U"):
+        elif(gate == "u"):
             mask = 1<<target[0]
             ind1 = np.where(self.indices & mask == 0)
             ind2 = np.where(self.indices & mask != 0)
             self.nstate = np.copy(self.state)
-            if(len(param)==3):
-                u0 = np.exp(-1j*(param[1]+param[2])/2.) * np.cos(param[0]/2.)
-                u1 = -np.exp(-1j*(param[1]-param[2])/2.) * np.sin(param[0]/2.)
-                u2 = np.exp(1j*(param[1]-param[2])/2.) * np.sin(param[0]/2.)
-                u3 = np.exp(1j*(param[1]+param[2])/2.) * np.cos(param[0]/2.)
-                self.nstate[ind1] = u0 * self.state[ind1] + u1 * self.state[ind2]
-                self.nstate[ind2] = u2 * self.state[ind1] + u3 * self.state[ind2]
-            else:
-                self.nstate[ind1] = param[0] * self.state[ind1] + param[1] * self.state[ind2]
-                self.nstate[ind2] = param[2] * self.state[ind1] + param[3] * self.state[ind2]
+
+            assert(len(param)==3)
+            u0 = np.exp(-1j*(param[1]+param[2])/2.) * np.cos(param[0]/2.)
+            u1 = -np.exp(-1j*(param[1]-param[2])/2.) * np.sin(param[0]/2.)
+            u2 = np.exp(1j*(param[1]-param[2])/2.) * np.sin(param[0]/2.)
+            u3 = np.exp(1j*(param[1]+param[2])/2.) * np.cos(param[0]/2.)
+            self.nstate[ind1] = u0 * self.state[ind1] + u1 * self.state[ind2]
+            self.nstate[ind2] = u2 * self.state[ind1] + u3 * self.state[ind2]
 
         else:
             raise Exception("not implemented {}".format())
@@ -120,7 +120,7 @@ class CpuSimulator(BaseSimulator):
         if(buffer):
             return np.real(np.sum(self.nstate * np.conj(self.nstate)))
         else:
-            val = np.sum(self.state * np.conj(self.state))
+            val = np.real(np.sum(self.state * np.conj(self.state)))
             self.currentTrace = val
             return np.real(val)
 
@@ -131,9 +131,9 @@ class CpuSimulator(BaseSimulator):
         """
         if(self.currentTrace is None):
             self.trace()
-        valtrace = np.real(self.currentTrace)
+        valtrace = self.currentTrace
         if(valtrace<eps):
-            raise ValueError("Trace is too small : {}".format(valtrace))
+            raise ValueError("Try to normalize zero-trace state : {}".format(valtrace))
         self.state/=np.sqrt(self.currentTrace)
         if(self.verbose): print("Normalize")
 
@@ -148,6 +148,7 @@ class CpuSimulator(BaseSimulator):
         """
         overload string function
         return bra-ket representation of current quantum state (very slow when n is large)
+        @eps : ignore amplitude smaller than eps when we convert state to str
         """
         fst = True
         ret = ""
@@ -165,18 +166,3 @@ class CpuSimulator(BaseSimulator):
 
     def __bound(self,ind):
         return (0<=ind and ind<self.n)
-
-if __name__ == "__main__":
-    cs = CpuSimulator(4)
-    cs.apply("h",0)
-    print(cs)
-    #cs.apply("cx",1,0)
-    #cs.apply("U",0,param=[np.pi/2,0,0])
-    cs.apply("U",0,param=[np.pi/2,0,0])
-    #cs.normalize()
-    #cs.apply("z",0)
-    print(cs)
-    cs.apply("U",0,param=[np.pi/2,0,0])
-    print(cs)
-    cs.apply("U",0,param=[np.pi/2,0,0])
-    print(cs)
