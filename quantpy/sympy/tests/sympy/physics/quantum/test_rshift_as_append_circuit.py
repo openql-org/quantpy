@@ -24,7 +24,4 @@ def test_combine_operator_and_qubit_with_rshifts_to_make_circuit():
     q = Qubit(0)
     h = H(0)
     x = X(0)
-    t = q >> h
-    print(t)
-    t2 = t >> x
     assert (q >> h >> x) == x * h * q
