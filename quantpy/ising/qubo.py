@@ -1,11 +1,11 @@
 # -*- coding:utf-8 -*-
-"""
+"""Utilities of QUBO matrix 
 """
 
 import numpy as np
 
 def getMat(qubo):
-    """
+    """Return array([h,J,Jsum+hsum])
     """
     N = len(qubo)
     h = []
