@@ -1,4 +1,4 @@
-
+# -*- coding:utf-8 -*-
 """
 Class for simulation of unitary universal quantum circuits.
 Use numpy-native functions for simulation
