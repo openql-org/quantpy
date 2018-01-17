@@ -1,25 +1,31 @@
 # -*- coding:utf-8 -*-
-# vim:ts=4:sw=4:sts=4:et:ai:ff=unix:fenc=utf-8
-
-"""Base class for quantum executor
-
+"""definition of BaseQuantumExecutor class
 """
 from abc import abstractmethod
 
 import sympy
 from qiskit.qasm._qasmparser import QasmParser
 
-
 class BaseQuantumExecutor:
+    """BaseQuantumExecutor Class
+    """
     def __init__(self):
+        """Initial method. No implements.  
+        """
         pass
 
     @abstractmethod
     def execute(self, circuit, **options):
+        """Abstract method.
+        @return: None
+        """
         return None
 
     def to_qasm(self, sympy_expr):
-        """
+        """QuantumExecutor classes' commom method.
+        Transform SymPy expression to OpenQASM format descriptions.
+
+        @return qasm format string.
         """
         qasm = 'OPENQASM 2.0;\ninclude "qelib1.inc";\n'
         assert isinstance(sympy_expr, sympy.mul.Mul), 'Sorry. Now, supported U*U*U*Qubit format'
@@ -51,7 +57,7 @@ class BaseQuantumExecutor:
                 qasm += 'cx qr[{}], qr[{}];\n'.format(int(gate.args[1]), int(gate.args[0]))
                 qasm += 'cx qr[{}], qr[{}];\n'.format(int(gate.args[0]), int(gate.args[1]))
             else:
-                assert False, '{}はゲートじゃないか、対応してないゲートです'.format(repr(gate))
+                assert False, '{} it is not a gate operator, nor is a supported operator'.format(repr(gate))
         for i in range(len(qubit)):
             qasm += 'measure qr[{0}] -> cr[{0}];\n'.format(i)
         return qasm

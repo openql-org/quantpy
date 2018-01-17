@@ -1,21 +1,18 @@
 # -*- coding:utf-8 -*-
-# vim:ts=4:sw=4:sts=4:et:ai:ff=unix:fenc=utf-8
-
-"""
-
-Todo:
-* Sometimes the final result needs to be expanded, we should do this by hand.
+"""definition of IBMQExecutor class
 """
 
 import sympy
 import qiskit
 
-#from quantpy.sympy.executor._base_quantum_executor import BaseQuantumExecutor
 from _base_quantum_executor import *
 
-
 class IBMQExecutor(BaseQuantumExecutor):
+    """IBMQExecutor Class
+    """
     def __init__(self, quantum_program=None, api_key=None, backend='local_qasm_simulator', shots=1024):
+        """Initial method.
+        """
         super().__init__()
         if quantum_program is None:
             quantum_program = qiskit.QuantumProgram()
@@ -26,6 +23,8 @@ class IBMQExecutor(BaseQuantumExecutor):
         self.shots = shots
 
     def execute(self, circuit, **options):
+        """
+        """
         qasm = self.to_qasm(circuit)
         name = self.qp.load_qasm_text(qasm)
         qobj = self.qp.compile(name, backend=self.backend, shots=self.shots)
