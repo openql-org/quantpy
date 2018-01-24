@@ -1,11 +1,18 @@
 # -*- coding:utf-8 -*-
-"""
+"""Utilities of Simulated [Quantum] Annealing.
 """
 from numpy import *
 
 #run sqa algorithm with params
 def run(kT,Ginit,m,mat,rep):
-    """
+    """run simulated QA.
+
+    @param kT
+    @param Ginit
+    @param m
+    @param mat
+    @param rep
+    @return array([qarr,Earr])
     """
     h = mat[0]
     J = mat[1]
@@ -43,4 +50,4 @@ def run(kT,Ginit,m,mat,rep):
         qarr.append(q)
         Earr.append(E+c)
 
-    print(array([qarr,Earr]))
+    return(array([qarr,Earr]))
