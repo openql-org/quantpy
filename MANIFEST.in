@@ -1,3 +1,10 @@
 include LICENSE
 include AUTHORS
 include README.rst
+recursive-include quantpy *
+recursive-exclude quantpy/__pycache__ *
+recursive-exclude quantpy/sympy/tests *
+recursive-exclude quantpy/sympy/__pycache__ *
+recursive-exclude quantpy/sympy/executor/__pycache__ *
+recursive-exclude quantpy/ising/tests *
+recursive-exclude quantpy/ising/__pycache__ *

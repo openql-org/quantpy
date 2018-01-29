@@ -20,6 +20,12 @@ with open(path.join(dir_setup, 'quantpy', 'release.py')) as f:
     # Defines __version__
     exec(f.read())
 
+def _requirements():
+    return [name.rstrip() for name in open(path.join(dir_setup, 'requirements.txt')).readlines()]
+
+def _test_requirements():
+    return [name.rstrip() for name in open(path.join(dir_setup, 'test-requirements.txt')).readlines()]
+
 if __name__ == '__main__':
     setup(name='quantpy',
           version=__version__,
@@ -27,7 +33,7 @@ if __name__ == '__main__':
           long_description=long_description,
           author='QuantPy development team',
           author_email='quantpy@openql.org',
-          license='BSD',
+          license='BSD-3-Clause',
           keywords="Math Physics",
           url='http://quantpy.org',
           packages=['quantpy'] + modules + tests,
@@ -43,5 +49,5 @@ if __name__ == '__main__':
               'Programming Language :: Python :: 3.6',
           ],
           python_requires=">=3.5",
-          install_requires=requires,
+          install_requires=_requirements(),
           )
