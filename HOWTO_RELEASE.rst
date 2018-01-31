@@ -16,7 +16,7 @@ Build release files
 
 Clear the former build files
 
-    $ rm -rf quantpy.egg-info/* dist/*
+    $ rm -rf quantpy.egg-info/ dist/
 
 Build the release files
 

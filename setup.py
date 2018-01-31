@@ -8,6 +8,10 @@ requires = [];
 from setuptools import setup, Command
 
 modules = [
+      'quantpy.sympy'
+    , 'quantpy.sympy.executor'
+    , 'quantpy.sympy.executor.simulator'
+    , 'quantpy.ising'
 ]
 
 tests = [
