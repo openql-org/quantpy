@@ -29,7 +29,7 @@ class ClassicalSimulationExecutor(BaseQuantumExecutor):
         circuit_dag = openquantumcompiler.compile(qasm,basis_gates=basis_gates_str)
         json = openquantumcompiler.dag2json(circuit_dag,basis_gates=basis_gates_str)
         self.simulate(json)
-        return None
+        return str(self.simulator)
 
     def simulate(self, circuitJson):
         """
