@@ -50,7 +50,7 @@ class IBMQExecutor(BaseQuantumExecutor):
                   (default: True).
         """
         with_measure = options.get('with_measure', True)
-        qasm = self.to_qasm(circuit, with_measure)
+        qasm = self.to_qasm(circuit, with_measure = with_measure)
         name = self.qp.load_qasm_text(qasm)
         try: 
             qobj = self.qp.compile(name, backend=self.backend, shots=self.shots)
