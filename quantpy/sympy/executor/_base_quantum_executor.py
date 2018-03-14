@@ -21,13 +21,17 @@ class BaseQuantumExecutor:
         """
         return None
 
-    def to_qasm(self, sympy_expr, with_measure=False):
+    def to_qasm(self, sympy_expr, **options):
         """QuantumExecutor classes' commom method.
         Transform SymPy expression to OpenQASM format descriptions.
 
         @return qasm format string.
         """
-        qasm = 'OPENQASM 2.0;\ninclude "qelib1.inc";\n'
+        with_measure = options.get('with_measure', False)
+        includes = options.get('includes', ['qelib1.inc'])
+        qasm = 'OPENQASM 2.0;\n'
+        for f in includes:
+            qasm += 'include "{0}";\n'.format(f)
         assert isinstance(sympy_expr, sympy.mul.Mul), 'Sorry. Now, supported U*U*U*Qubit format'
         qubit = sympy_expr.args[-1]
         assert isinstance(qubit, sympy.physics.quantum.qubit.Qubit), 'Sorry. Now, supported U*U*U*Qubit format'
