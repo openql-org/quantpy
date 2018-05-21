@@ -4,7 +4,9 @@
 from abc import abstractmethod
 
 import sympy
+import qiskit
 from qiskit.qasm._qasmparser import QasmParser
+import quantpy.sympy.gate_extension
 
 class BaseQuantumExecutor:
     """BaseQuantumExecutor Class
@@ -92,6 +94,11 @@ class BaseQuantumExecutor:
                 elif isinstance(gate.args[1], sympy.physics.quantum.gate.TGate):
                     c = tuple(gate.args[0])[0]
                     qasm += 'cu1(pi/4) qr[{}], qr[{}];\n'.format(c, t)
+                elif isinstance(gate.args[1], quantpy.sympy.Rk):
+                    c = tuple(gate.args[0])[0]
+                    r = gate.args[1]
+                    k = r.k
+                    qasm += 'cu1(pi/{}) qr[{}], qr[{}];\n'.format(k, c, t)
                 else:
                     assert False, '{} it is not a gate operator, nor is a supported operator'.format(repr(gate))
             else:

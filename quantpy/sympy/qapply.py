@@ -2,6 +2,8 @@
 """Logic for applying operators to states.
 """
 
+__all__ = ['qapply']
+
 from quantpy.sympy.executor.sympy_executor import SymPyExecutor
 
 def qapply(circuit, **options):
