@@ -2,7 +2,7 @@
 """definition of SymPyExdecutor class
 """
 from sympy.physics.quantum.qapply import qapply as sympy_qapply
-from quantpy.sympy.executor._base_quantum_executor import BaseQuantumExecutor
+from ._base_quantum_executor import BaseQuantumExecutor
 
 class SymPyExecutor(BaseQuantumExecutor):
     """SymPyExecutor Class for transparently executing sympy's qapply.
