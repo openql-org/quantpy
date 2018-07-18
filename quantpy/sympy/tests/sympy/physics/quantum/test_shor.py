@@ -1,10 +1,9 @@
 from sympy.utilities.pytest import XFAIL
 
-from sympy.physics.quantum.qapply import qapply
+from quantpy.sympy.qapply import qapply
 from sympy.physics.quantum.qubit import Qubit
 from sympy.physics.quantum.shor import CMod, getr
 
-from quantpy.sympy.qapply import qapply
 
 @XFAIL
 def test_CMod():

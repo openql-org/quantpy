@@ -10,8 +10,6 @@ from sympy.physics.quantum.state import (
 )
 from sympy.physics.quantum.hilbert import HilbertSpace
 
-from quantpy.sympy.qapply import qapply
-
 x, y, t = symbols('x,y,t')
 
 

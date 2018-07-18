@@ -4,8 +4,6 @@ from sympy.physics.quantum.gate import CNOT, H, SWAP, CGate, S, T
 from sympy.external import import_module
 from sympy.utilities.pytest import skip
 
-from quantpy.sympy.qapply import qapply
-
 mpl = import_module('matplotlib')
 
 def test_render_label():

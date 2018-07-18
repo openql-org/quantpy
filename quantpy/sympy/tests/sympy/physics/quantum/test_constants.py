@@ -2,7 +2,6 @@ from sympy import Float
 
 from sympy.physics.quantum.constants import hbar
 
-from quantpy.sympy.qapply import qapply
 
 def test_hbar():
     assert hbar.is_commutative is True

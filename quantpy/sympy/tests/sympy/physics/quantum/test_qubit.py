@@ -8,14 +8,12 @@ from sympy.physics.quantum.qubit import (measure_all, measure_partial,
                                          IntQubitBra, QubitBra)
 from sympy.physics.quantum.gate import (HadamardGate, CNOT, XGate, YGate,
                                         ZGate, PhaseGate)
-from sympy.physics.quantum.qapply import qapply
+from quantpy.sympy.qapply import qapply
 from sympy.physics.quantum.represent import represent
 from sympy.physics.quantum.shor import Qubit
 from sympy.utilities.pytest import raises
 from sympy.physics.quantum.density import Density
 from sympy.core.trace import Tr
-
-from quantpy.sympy.qapply import qapply
 
 x, y = symbols('x,y')
 

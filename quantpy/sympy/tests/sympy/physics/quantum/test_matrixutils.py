@@ -11,8 +11,6 @@ from sympy.core.compatibility import range
 from sympy.external import import_module
 from sympy.utilities.pytest import skip
 
-from quantpy.sympy.qapply import qapply
-
 m = Matrix([[1, 2], [3, 4]])
 
 

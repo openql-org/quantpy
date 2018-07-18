@@ -2,18 +2,21 @@
 """definition of ClassicalSimulationExecutor class
 """
 
-import qiskit
 import numpy as np
+from qiskit import transpiler
+from qiskit.backends.local import StatevectorSimulatorPy
+from qiskit.wrapper._circuittoolkit import circuit_from_qasm_string
 
-import qiskit._openquantumcompiler as openquantumcompiler
 from quantpy.sympy.executor._base_quantum_executor import BaseQuantumExecutor
 from quantpy.sympy.executor.simulator.numpy_simulator import NumpySimulator
+
 
 class ClassicalSimulationExecutor(BaseQuantumExecutor):
 
     def __init__(self):
         super().__init__()
         self.simulator = None
+
 
     def execute(self, circuit, **options):
         """
@@ -25,9 +28,8 @@ class ClassicalSimulationExecutor(BaseQuantumExecutor):
         self.simulator = NumpySimulator()
         basis_gates_str = (",".join(self.simulator.basis_gates)).lower()
         # the following one-line compilation ignores basis_gates, and returnes "u2" for "h".
-        #json = openquantumcompiler.compile(qasm,basis_gates=basis_gates_str,format="json")
-        circuit_dag = openquantumcompiler.compile(qasm,basis_gates=basis_gates_str)
-        json = openquantumcompiler.dag2json(circuit_dag,basis_gates=basis_gates_str)
+        quantum_circuit = circuit_from_qasm_string(qasm)
+        json = transpiler.compile(quantum_circuit, basis_gates=basis_gates_str, backend=StatevectorSimulatorPy())["circuits"][0]["compiled_circuit"]
         self.simulate(json)
         return str(self.simulator)
 
