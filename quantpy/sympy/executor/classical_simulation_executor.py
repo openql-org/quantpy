@@ -4,7 +4,7 @@
 
 import numpy as np
 from qiskit import transpiler
-from qiskit.backends.local import QasmSimulatorPy
+from qiskit.backends.local import StatevectorSimulatorPy
 from qiskit.wrapper._circuittoolkit import circuit_from_qasm_string
 
 from quantpy.sympy.executor._base_quantum_executor import BaseQuantumExecutor
@@ -29,7 +29,7 @@ class ClassicalSimulationExecutor(BaseQuantumExecutor):
         basis_gates_str = (",".join(self.simulator.basis_gates)).lower()
         # the following one-line compilation ignores basis_gates, and returnes "u2" for "h".
         quantum_circuit = circuit_from_qasm_string(qasm)
-        json = transpiler.compile(quantum_circuit, basis_gates=basis_gates_str, backend=QasmSimulatorPy())["circuits"][0]["compiled_circuit"]
+        json = transpiler.compile(quantum_circuit, basis_gates=basis_gates_str, backend=StatevectorSimulatorPy())["circuits"][0]["compiled_circuit"]
         self.simulate(json)
         return str(self.simulator)
 

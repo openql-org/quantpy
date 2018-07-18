@@ -4,7 +4,6 @@ from sympy.physics.quantum.dagger import adjoint, Dagger
 from sympy.external import import_module
 from sympy.utilities.pytest import skip
 
-from quantpy.sympy.qapply import qapply
 
 def test_scalars():
     x = symbols('x', complex=True)

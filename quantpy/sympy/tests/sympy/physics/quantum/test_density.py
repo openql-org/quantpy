@@ -14,7 +14,6 @@ from sympy.utilities.pytest import raises, slow
 from sympy.physics.quantum.matrixutils import scipy_sparse_matrix
 from sympy.physics.quantum.tensorproduct import TensorProduct
 
-from quantpy.sympy.qapply import qapply
 
 def test_eval_args():
     # check instance created
