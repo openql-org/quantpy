@@ -8,7 +8,6 @@ from sympy.physics.quantum.circuitutils import (kmp_table, find_subcircuit,
         flatten_ids)
 from sympy.utilities.pytest import slow
 
-from quantpy.sympy.qapply import qapply
 
 def create_gate_sequence(qubit=0):
     gates = (X(qubit), Y(qubit), Z(qubit), H(qubit))

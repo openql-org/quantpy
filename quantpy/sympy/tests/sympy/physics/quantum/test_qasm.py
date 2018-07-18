@@ -4,8 +4,6 @@ from sympy.physics.quantum.gate import X, Z, H, S, T
 from sympy.physics.quantum.gate import CNOT, SWAP, CPHASE, CGate, CGateS
 from sympy.physics.quantum.circuitplot import Mz, CreateOneQubitGate, CreateCGate
 
-from quantpy.sympy.qapply import qapply
-
 def test_qasm_readqasm():
     qasm_lines = """\
     qubit q_0

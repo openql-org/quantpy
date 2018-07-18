@@ -4,7 +4,6 @@ from sympy.physics.quantum.fermion import FermionOp
 from sympy.physics.quantum.operatorordering import (normal_order,
                                                  normal_ordered_form)
 
-from quantpy.sympy.qapply import qapply
 
 def test_normal_order():
     a = BosonOp('a')

@@ -5,7 +5,6 @@ from sympy.physics.quantum.boson import BosonOp
 from sympy.physics.quantum.boson import (
     BosonFockKet, BosonFockBra, BosonCoherentKet, BosonCoherentBra)
 
-from quantpy.sympy.qapply import qapply
 
 def test_bosonoperator():
     a = BosonOp('a')

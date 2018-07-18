@@ -5,7 +5,6 @@ from sympy.physics.quantum.hilbert import (
 
 from sympy import Interval, oo, Symbol, sstr, srepr
 
-from quantpy.sympy.qapply import qapply
 
 def test_hilbert_space():
     hs = HilbertSpace()

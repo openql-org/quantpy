@@ -2,7 +2,6 @@ from sympy.physics.quantum import Dagger, AntiCommutator, qapply
 from sympy.physics.quantum.fermion import FermionOp
 from sympy.physics.quantum.fermion import FermionFockKet, FermionFockBra
 
-from quantpy.sympy.qapply import qapply
 
 def test_fermionoperator():
     c = FermionOp('c')
