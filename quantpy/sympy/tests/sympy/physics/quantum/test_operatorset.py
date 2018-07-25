@@ -17,8 +17,6 @@ from sympy.utilities.pytest import raises
 
 from sympy.utilities.pytest import XFAIL
 
-from quantpy.sympy.qapply import qapply
-
 
 @XFAIL
 def test_spin():

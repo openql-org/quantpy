@@ -3,8 +3,6 @@ from sympy.physics.quantum.qexpr import QExpr, _qsympify_sequence
 from sympy.physics.quantum.hilbert import HilbertSpace
 from sympy.core.containers import Tuple
 
-from quantpy.sympy.qapply import qapply
-
 x = Symbol('x')
 y = Symbol('y')
 
