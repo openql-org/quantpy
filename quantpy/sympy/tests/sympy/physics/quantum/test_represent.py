@@ -16,10 +16,8 @@ from sympy.physics.quantum.matrixutils import (numpy_ndarray,
                                                scipy_sparse_matrix, to_numpy,
                                                to_scipy_sparse, to_sympy)
 from sympy.physics.quantum.cartesian import XKet, XOp, XBra
-from sympy.physics.quantum.qapply import qapply
-from sympy.physics.quantum.operatorset import operators_to_state
-
 from quantpy.sympy.qapply import qapply
+from sympy.physics.quantum.operatorset import operators_to_state
 
 Amat = Matrix([[1, I], [-I, 1]])
 Bmat = Matrix([[1, 2], [3, 4]])

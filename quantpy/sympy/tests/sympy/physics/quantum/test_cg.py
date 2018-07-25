@@ -4,7 +4,6 @@ from sympy.physics.quantum.cg import Wigner3j, Wigner6j, Wigner9j, CG, cg_simp
 from sympy.functions.special.tensor_functions import KroneckerDelta
 from sympy.utilities.pytest import slow
 
-from quantpy.sympy.qapply import qapply
 
 @slow
 def test_cg_simp_add():

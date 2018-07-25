@@ -6,7 +6,6 @@ from sympy.physics.quantum.pauli import (SigmaOpBase, SigmaX, SigmaY, SigmaZ,
                                          qsimplify_pauli)
 from sympy.physics.quantum.pauli import SigmaZKet, SigmaZBra
 
-from quantpy.sympy.qapply import qapply
 
 sx, sy, sz = SigmaX(), SigmaY(), SigmaZ()
 sx1, sy1, sz1 = SigmaX(1), SigmaY(1), SigmaZ(1)

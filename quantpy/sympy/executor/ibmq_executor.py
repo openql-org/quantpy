@@ -44,14 +44,23 @@ class IBMQExecutor(BaseQuantumExecutor):
 
     def execute(self, circuit, **options):
         """
+                The following options are valid:
+
+                * ``with_measure``: qapply with measure flag
+                  (default: True).
         """
-        qasm = self.to_qasm(circuit)
+        with_measure = options.get('with_measure', True)
+        qasm = self.to_qasm(circuit, with_measure = with_measure)
         name = self.qp.load_qasm_text(qasm)
-        qobj = self.qp.compile(name, backend=self.backend, shots=self.shots)
-        cnt = self.qp.run(qobj).get_counts(name)
-        self.qp.destroy_circuit(name)
-        for reg in list(self.qp.get_quantum_register_names()):
-            self.qp.destroy_quantum_register(reg)
-        for reg in list(self.qp.get_classical_register_names()):
-            self.qp.destroy_classical_register(reg)
-        return cnt
+        try: 
+            qobj = self.qp.compile(name, backend=self.backend, shots=self.shots)
+            cnt = self.qp.run(qobj).get_counts(name)
+            self.qp.destroy_circuit(name)
+            for reg in list(self.qp.get_quantum_register_names()):
+                self.qp.destroy_quantum_register(reg)
+            for reg in list(self.qp.get_classical_register_names()):
+                self.qp.destroy_classical_register(reg)
+            return cnt
+        except qiskit._resulterror.ResultError as ex:
+            print("error:", ex.args)
+            return

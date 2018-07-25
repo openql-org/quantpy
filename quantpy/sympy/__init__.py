@@ -13,10 +13,10 @@ __all__ = []
 #    determine which names are imported when
 #    "from quantpy.sympy import *" is done.
 
-#from .qapply import __all__ as qap_all
-#from .qapply import *
-#__all__.extend(qap_all)
+from .qapply import __all__ as qap_all
+from .qapply import *
+__all__.extend(qap_all)
 
-#from . import _quantumexecutor
-#from ._quantumexecutor import *
-#__all__.extend(_quantumexecutor.__all__)
+from .gate_extension import __all__ as gate_ext_all
+from .gate_extension import *
+__all__.extend(gate_ext_all)
