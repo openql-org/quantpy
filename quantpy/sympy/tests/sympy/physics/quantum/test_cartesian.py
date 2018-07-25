@@ -10,8 +10,6 @@ from sympy.physics.quantum.cartesian import (
 )
 from sympy.physics.quantum.operator import DifferentialOperator
 
-from quantpy.sympy.qapply import qapply
-
 x, y, z, x_1, x_2, x_3, y_1, z_1 = symbols('x,y,z,x_1,x_2,x_3,y_1,z_1')
 px, py, px_1, px_2 = symbols('px py px_1 px_2')
 

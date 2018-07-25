@@ -4,7 +4,6 @@ from sympy.physics.quantum.dagger import Dagger
 from sympy.physics.quantum.anticommutator import AntiCommutator as AComm
 from sympy.physics.quantum.operator import Operator
 
-from quantpy.sympy.qapply import qapply
 
 a, b, c = symbols('a,b,c')
 A, B, C, D = symbols('A,B,C,D', commutative=False)

@@ -5,7 +5,7 @@ from sympy.core.compatibility import range
 from sympy.physics.quantum import Dagger
 from sympy.physics.quantum.constants import hbar
 from sympy.physics.quantum import Commutator
-from sympy.physics.quantum.qapply import qapply
+from quantpy.sympy.qapply import qapply
 from sympy.physics.quantum.innerproduct import InnerProduct
 from sympy.physics.quantum.cartesian import X, Px
 from sympy.functions.special.tensor_functions import KroneckerDelta
@@ -17,8 +17,6 @@ from sympy.utilities.pytest import skip
 from sympy.physics.quantum.sho1d import (RaisingOp, LoweringOp,
                                         SHOKet, SHOBra,
                                         Hamiltonian, NumberOp)
-
-from quantpy.sympy.qapply import qapply
 
 ad = RaisingOp('a')
 a = LoweringOp('a')
