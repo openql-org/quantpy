@@ -54,4 +54,6 @@ if __name__ == '__main__':
           ],
           python_requires=">=3.5",
           install_requires=_requirements(),
+          tests_require=_test_requirements(),
+          setup_requires=['pytest-runner']
           )
