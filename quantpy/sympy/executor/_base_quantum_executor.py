@@ -4,8 +4,6 @@
 from abc import abstractmethod
 
 import sympy
-import qiskit
-from qiskit.qasm._qasmparser import QasmParser
 import quantpy.sympy.gate_extension
 
 class BaseQuantumExecutor:
