@@ -3,9 +3,11 @@
 """
 
 import numpy as np
-from qiskit import transpiler
-from qiskit.backends.local import QasmSimulatorPy
-from qiskit.wrapper._circuittoolkit import circuit_from_qasm_string
+from qiskit import QuantumCircuit, transpiler
+from qiskit.qasm import Qasm
+from qiskit.providers.builtinsimulators import QasmSimulatorPy
+from qiskit.converters import circuits_to_qobj
+from qiskit.qobj import qobj_to_dict
 
 from quantpy.sympy.executor._base_quantum_executor import BaseQuantumExecutor
 from quantpy.sympy.executor.simulator.numpy_simulator import NumpySimulator
@@ -28,8 +30,10 @@ class ClassicalSimulationExecutor(BaseQuantumExecutor):
         self.simulator = NumpySimulator()
         basis_gates_str = (",".join(self.simulator.basis_gates)).lower()
         # the following one-line compilation ignores basis_gates, and returnes "u2" for "h".
-        quantum_circuit = circuit_from_qasm_string(qasm)
-        json = transpiler.compile(quantum_circuit, basis_gates=basis_gates_str, backend=QasmSimulatorPy())["circuits"][0]["compiled_circuit"]
+        quantum_circuit = QuantumCircuit.from_qasm_str(qasm)
+        circuit = transpiler.transpile(quantum_circuit, basis_gates=basis_gates_str, backend=QasmSimulatorPy())
+        qobj = circuits_to_qobj(circuit, QasmSimulatorPy())
+        json = qobj_to_dict(qobj)["experiments"][0]
         self.simulate(json)
         return str(self.simulator)
 
@@ -41,14 +45,14 @@ class ClassicalSimulationExecutor(BaseQuantumExecutor):
 
         sim = self.simulator
 
-        numQubit = circuitJson["header"]["number_of_qubits"]
+        numQubit = circuitJson["header"]["n_qubits"]
         sim.initialize(numQubit)
 
-        if "number_of_clbits" in circuitJson["header"].keys():
-            numBit = circuitJson["header"]["number_of_clbits"]
+        if "clbit_labels" in circuitJson["header"].keys():
+            numBit = len(circuitJson["header"]["clbit_labels"])
             clbitsArray = np.zeros(numBit)
 
-        for operation in circuitJson["operations"]:
+        for operation in circuitJson["instructions"]:
 
             gateOps = operation["name"]
 
@@ -71,8 +75,8 @@ class ClassicalSimulationExecutor(BaseQuantumExecutor):
                 if (not flag):
                     continue
 
-            if "clbits" in operation.keys():
-                measureTargets = operation["clbits"]
+            if "memory" in operation.keys():
+                measureTargets = operation["memory"]
 
             if "params" in operation.keys():
                 params = operation["params"]
