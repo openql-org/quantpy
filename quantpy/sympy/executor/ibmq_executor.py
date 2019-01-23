@@ -2,11 +2,11 @@
 """definition of IBMQExecutor class
 """
 
-import sympy
 import qiskit
 from qiskit import BasicAer
 
 from quantpy.sympy.executor._base_quantum_executor import BaseQuantumExecutor
+
 
 class IBMQExecutor(BaseQuantumExecutor):
     """IBMQExecutor Class
@@ -28,7 +28,7 @@ class IBMQExecutor(BaseQuantumExecutor):
                   (default: 'local_qasm_simulator').
                 * ``shots``: shots using QISKit's execute function
                   (default: 1024).
-                * ``qiskit_options`` : dict of additional parameters 
+                * ``qiskit_options`` : dict of additional parameters
                   for qiskit's ``execute`` method.
                   (for example, ``{"max_credits":3}``)
         """
@@ -47,9 +47,9 @@ class IBMQExecutor(BaseQuantumExecutor):
                   (default: True).
         """
         with_measure = options.get('with_measure', True)
-        qasm = self.to_qasm(circuit, with_measure = with_measure)
+        qasm = self.to_qasm(circuit, with_measure=with_measure)
         quantum_circuit = qiskit.QuantumCircuit.from_qasm_str(qasm)
-        try: 
+        try:
             from qiskit import execute
             job = execute(quantum_circuit, backend=self.backend, shots=self.shots, **self.extra_args)
             return job.result().get_counts()

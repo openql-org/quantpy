@@ -3,16 +3,16 @@ import pytest
 from sympy.physics.quantum.gate import H
 from sympy.physics.quantum.qubit import Qubit
 from quantpy.sympy.qapply import qapply
-import sympy
 from quantpy.sympy.executor.classical_simulation_executor import ClassicalSimulationExecutor
 from quantpy.sympy.executor.sympy_executor import SymPyExecutor
 from quantpy.sympy.executor.ibmq_executor import IBMQExecutor
+
 
 def test_executors():
     c = H(2)*H(1)*H(0)*Qubit('000')
     for executor in (SymPyExecutor(), ClassicalSimulationExecutor(), IBMQExecutor()):
         result = qapply(c, executor=executor)
-        ## TODO : can we check the result?
+        # TODO : can we check the result?
         print(result)
         print(result.__class__)
 
@@ -30,6 +30,6 @@ def test_ibmq_real_device():
 
     c = H(0)*Qubit('0')
     # XXX : this may takes long time and no feedback of job status yet
-    result = qapply(c, executor=IBMQExecutor(backend=backend, shots=1024, qiskit_options={'max_credits':3}))
+    result = qapply(c, executor=IBMQExecutor(backend=backend, shots=1024, qiskit_options={'max_credits': 3}))
     print(result)
     print(result.__class__)
