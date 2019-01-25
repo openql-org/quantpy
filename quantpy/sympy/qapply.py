@@ -2,7 +2,7 @@
 """Logic for applying operators to states.
 """
 
-__all__ = ['qapply']
+__all__ = ['qapply', 'qexperiment']
 
 from quantpy.sympy.executor.sympy_executor import SymPyExecutor
 
@@ -27,3 +27,8 @@ def qapply(circuit, **options):
     """
     executor = options.get('executor', SymPyExecutor())
     return executor.execute(circuit, **options)
+
+
+def qexperiment(circuit, slot, executor=SymPyExecutor(), **options):
+    executor = options.get('executor', SymPyExecutor())
+    return executor.experiment(circuit, slot, **options)

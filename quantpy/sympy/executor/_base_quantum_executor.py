@@ -1,4 +1,4 @@
-# -*- coding:utf-8 -*-
+# -* coding:utf-8 -*-
 """definition of BaseQuantumExecutor class
 """
 from abc import abstractmethod
@@ -20,6 +20,13 @@ class BaseQuantumExecutor:
         @return: None
         """
         return None
+
+    @abstractmethod
+    def experiment(self, circuit, shot, **options):
+        """Execute circuit ``shot`` times and return the result.
+        @return: dict qubit string (as '0101') -> int
+        """
+        pass
 
     def to_qasm(self, sympy_expr, **options):
         """QuantumExecutor classes' commom method.
