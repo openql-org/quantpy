@@ -3,6 +3,7 @@
 """
 from sympy.physics.quantum.qapply import qapply as sympy_qapply
 from ._base_quantum_executor import BaseQuantumExecutor
+from collections import defaultdict
 
 class SymPyExecutor(BaseQuantumExecutor):
     """SymPyExecutor Class for transparently executing sympy's qapply.
@@ -11,8 +12,45 @@ class SymPyExecutor(BaseQuantumExecutor):
         """Initial method.
         """
         super().__init__()
+        self.random_sequence = self.__class__._default_random_sequence
 
     def execute(self, circuit, **options):
         """This method calls sympy.physics.quantum.qapply transparently.
         """
         return sympy_qapply(circuit, **options)
+
+    def experiment(self, circuit, shots, **options):
+        """This method calls sympy.physics.quantum.qapply, then count numbers of bits observed.
+        """
+        from sympy.physics.quantum.qubit import measure_all
+        import sympy
+        # calculate possibilities from the result of ``qapply``
+        res = measure_all(sympy_qapply(circuit, **options))
+        # make list of tuples (``qubit str``, ``possibility``) as ('0000', 0.125), ('0001', 0.25)..
+        possibilities = [(''.join([str(x) for x in k.qubit_values]), sympy.N(v)) for k,v in res]
+
+        print(self.random_sequence)
+        # iterate random numbers and count the observation of each qubit
+        result = defaultdict(int)
+        for r in self.random_sequence(shots):
+            threashold = 0.0
+            for qubit, possibility in possibilities:
+                threashold += possibility
+                if r < threashold:
+                    result[qubit] += 1
+                    break
+        return result
+
+    @staticmethod
+    def _default_random_sequence(num):
+        import random
+        return (random.random() for _ in range(num))
+
+    @staticmethod
+    def step_sequence(num):
+        """
+        dummy "radom" method used for testing.
+        This yields list [0, 1/n, 2/n...], 
+        so you can easily estimate the number of result from shot
+        """
+        return (i / num for i in range(num))

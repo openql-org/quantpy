@@ -29,6 +29,5 @@ def qapply(circuit, **options):
     return executor.execute(circuit, **options)
 
 
-def qexperiment(circuit, slot, executor=SymPyExecutor(), **options):
-    executor = options.get('executor', SymPyExecutor())
+def qexperiment(circuit, slot=1024, executor=SymPyExecutor(), **options):
     return executor.experiment(circuit, slot, **options)
