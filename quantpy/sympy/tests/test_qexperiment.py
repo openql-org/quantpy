@@ -8,6 +8,7 @@ from quantpy.sympy.qapply import qexperiment
 
 from quantpy.sympy.executor._base_quantum_executor import BaseQuantumExecutor
 from quantpy.sympy.executor.sympy_executor import SymPyExecutor
+from quantpy.sympy.executor.ibmq_executor import IBMQExecutor
 
 
 class MockExecutor(BaseQuantumExecutor):
@@ -40,6 +41,17 @@ def test_qexperiment_default():
     assert len(result) == 8
 
 
+def test_qexperiment_sympy_with_symbols():
+    import sympy as sp
+    a, b = sp.symbols('alpha, beta') 
+    psi = a*Qubit('00') + b*Qubit('11')
+    executor = SymPyExecutor()
+    result = qexperiment(X(0) * psi, executor=executor)
+    norm = sp.Abs(a)**2 + sp.Abs(b)**2
+    assert result == {'01': 1024 * a*a.conjugate() / norm,
+                      '10': 1024 * b*b.conjugate() / norm}
+
+
 def test_qexperiment_sympy_value1():
     c = H(2)*H(1)*H(0)*Qubit('000')
     executor = SymPyExecutor()
@@ -56,4 +68,12 @@ def test_qexperiment_sympy_value1():
             '110': 128,
             '111': 128,
             }
+
+
+def test_qexperiment_ibmq():
+    c = H(2)*H(1)*H(0)*Qubit('000')
+    result = qexperiment(c, executor=IBMQExecutor())
+    assert len(result) == 8
+
+
 

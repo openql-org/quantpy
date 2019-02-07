@@ -24,21 +24,13 @@ class SymPyExecutor(BaseQuantumExecutor):
         """
         from sympy.physics.quantum.qubit import measure_all
         import sympy
-        # calculate possibilities from the result of ``qapply``
+        # calculate probability from the result of ``qapply``
         res = measure_all(sympy_qapply(circuit, **options))
-        # make list of tuples (``qubit str``, ``possibility``) as ('0000', 0.125), ('0001', 0.25)..
-        possibilities = [(''.join([str(x) for x in k.qubit_values]), sympy.N(v)) for k,v in res]
-
-        print(self.random_sequence)
-        # iterate random numbers and count the observation of each qubit
+        # make list of tuples (``qubit str``, ``probability``) as ('0000', 0.125), ('0001', 0.25)..
+        probabilities = [(''.join([str(x) for x in k.qubit_values]), v) for k,v in res]
         result = defaultdict(int)
-        for r in self.random_sequence(shots):
-            threashold = 0.0
-            for qubit, possibility in possibilities:
-                threashold += possibility
-                if r < threashold:
-                    result[qubit] += 1
-                    break
+        for qubit, probability in probabilities:
+            result[qubit] = sympy.simplify(probability * shots)
         return result
 
     @staticmethod
