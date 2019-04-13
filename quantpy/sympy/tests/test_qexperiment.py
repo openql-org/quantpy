@@ -48,8 +48,8 @@ def test_qexperiment_sympy_with_symbols():
     executor = SymPyExecutor()
     result = qexperiment(X(0) * psi, executor=executor)
     norm = sp.Abs(a)**2 + sp.Abs(b)**2
-    assert result == {'01': 1024 * a*a.conjugate() / norm,
-                      '10': 1024 * b*b.conjugate() / norm}
+    assert result == {Qubit('01'): 1024 * a*a.conjugate() / norm,
+                      Qubit('10'): 1024 * b*b.conjugate() / norm}
 
 
 def test_qexperiment_sympy_value1():
@@ -59,14 +59,14 @@ def test_qexperiment_sympy_value1():
     executor.random_sequence = SymPyExecutor.step_sequence
     result = qexperiment(c, 1024, executor)
     assert result == {
-            '000': 128,
-            '001': 128,
-            '010': 128,
-            '011': 128,
-            '100': 128,
-            '101': 128,
-            '110': 128,
-            '111': 128,
+            Qubit('000'): 128,
+            Qubit('001'): 128,
+            Qubit('010'): 128,
+            Qubit('011'): 128,
+            Qubit('100'): 128,
+            Qubit('101'): 128,
+            Qubit('110'): 128,
+            Qubit('111'): 128,
             }
 
 
