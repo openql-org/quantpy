@@ -22,9 +22,9 @@ class BaseQuantumExecutor:
         return None
 
     @abstractmethod
-    def experiment(self, circuit, shot, **options):
-        """Execute circuit ``shot`` times and return the result.
-        @return: dict qubit string (as '0101') -> int
+    def experiment(self, circuit, shots, **options):
+        """Execute circuit ``shots`` times and return the result.
+        @return: dict {Qubit -> int} or {str -> int} like [{'0001': 104}, {..}..]
         """
         pass
 
