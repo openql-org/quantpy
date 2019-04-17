@@ -2,6 +2,7 @@
 """definition of ClassicalSimulationExecutor class
 """
 
+from collections import defaultdict
 import numpy as np
 from qiskit import QuantumCircuit, transpiler
 from qiskit.qasm import Qasm
@@ -12,6 +13,9 @@ from qiskit.qobj import qobj_to_dict
 from quantpy.sympy.executor._base_quantum_executor import BaseQuantumExecutor
 from quantpy.sympy.executor.simulator.numpy_simulator import NumpySimulator
 
+def _default_random_sequence(num):
+    import random
+    return (random.random() for _ in range(num))
 
 class ClassicalSimulationExecutor(BaseQuantumExecutor):
 
@@ -116,16 +120,20 @@ class ClassicalSimulationExecutor(BaseQuantumExecutor):
         """
         return str(self.simulator)
 
-    @staticmethod
-    def _default_random_sequence(num):
-        import random
-        return (random.random() for _ in range(num))
-
-    @staticmethod
-    def step_sequence(num):
-        """
-        dummy "radom" method used for testing.
-        This yields list [0, 1/n, 2/n...], 
-        so you can easily estimate the number of result from shot
-        """
-        return (i / num for i in range(num))
+    def experiment(self, circuit, shots=1024, random=_default_random_sequence):
+        states = self.execute(circuit)
+        # create a cumulative probability that monotonically increases
+        probabilities = []
+        sum = 0.0
+        for qubit, amplitude in states.items():
+            sum += abs(amplitude) ** 2
+            probabilities.append((qubit,sum))
+        print(probabilities)
+        # collect measurement results
+        result = defaultdict(int)
+        for r in random(shots):
+            for qubit, probability in probabilities:
+                if r < probability:
+                    result[qubit] += 1
+                    break
+        return result

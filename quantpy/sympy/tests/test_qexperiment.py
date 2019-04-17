@@ -9,6 +9,7 @@ from quantpy.sympy.qapply import qexperiment
 from quantpy.sympy.executor._base_quantum_executor import BaseQuantumExecutor
 from quantpy.sympy.executor.sympy_executor import SymPyExecutor
 from quantpy.sympy.executor.ibmq_executor import IBMQExecutor
+from quantpy.sympy.executor.classical_simulation_executor import ClassicalSimulationExecutor
 
 
 class MockExecutor(BaseQuantumExecutor):
@@ -74,4 +75,26 @@ def test_qexperiment_ibmq():
     assert len(result) == 8
 
 
+def step_sequence(num):
+    """
+    dummy "radom" method used for testing.
+    This yields list [0, 1/n, 2/n...], 
+    so you can easily estimate the number of result from the count
+    """
+    return (i / num for i in range(num))
+
+def test_qexperiment_numpy():
+    c = H(2)*H(1)*H(0)*Qubit('000')
+    executor = ClassicalSimulationExecutor()
+    result = qexperiment(c, 1024, executor, random=step_sequence)
+    assert result == {
+            Qubit('000'): 128,
+            Qubit('001'): 128,
+            Qubit('010'): 128,
+            Qubit('011'): 128,
+            Qubit('100'): 128,
+            Qubit('101'): 128,
+            Qubit('110'): 128,
+            Qubit('111'): 128,
+            }
 
