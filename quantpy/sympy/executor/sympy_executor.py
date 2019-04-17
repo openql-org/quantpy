@@ -12,7 +12,6 @@ class SymPyExecutor(BaseQuantumExecutor):
         """Initial method.
         """
         super().__init__()
-        self.random_sequence = self.__class__._default_random_sequence
 
     def execute(self, circuit, **options):
         """This method calls sympy.physics.quantum.qapply transparently.

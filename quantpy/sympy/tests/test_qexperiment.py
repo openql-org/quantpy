@@ -55,8 +55,6 @@ def test_qexperiment_sympy_with_symbols():
 def test_qexperiment_sympy_value1():
     c = H(2)*H(1)*H(0)*Qubit('000')
     executor = SymPyExecutor()
-    # prepare "random numbers" for test
-    executor.random_sequence = SymPyExecutor.step_sequence
     result = qexperiment(c, 1024, executor)
     assert result == {
             Qubit('000'): 128,
