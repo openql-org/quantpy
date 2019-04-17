@@ -35,7 +35,7 @@ class ClassicalSimulationExecutor(BaseQuantumExecutor):
         qobj = circuits_to_qobj(circuit, QasmSimulatorPy())
         json = qobj_to_dict(qobj)["experiments"][0]
         self.simulate(json)
-        return str(self.simulator)
+        return self.simulator.to_coefficients()
 
     def simulate(self, circuitJson):
         """
@@ -115,3 +115,17 @@ class ClassicalSimulationExecutor(BaseQuantumExecutor):
         @return string representation of the current quantum state
         """
         return str(self.simulator)
+
+    @staticmethod
+    def _default_random_sequence(num):
+        import random
+        return (random.random() for _ in range(num))
+
+    @staticmethod
+    def step_sequence(num):
+        """
+        dummy "radom" method used for testing.
+        This yields list [0, 1/n, 2/n...], 
+        so you can easily estimate the number of result from shot
+        """
+        return (i / num for i in range(num))

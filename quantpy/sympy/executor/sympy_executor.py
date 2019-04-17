@@ -31,16 +31,3 @@ class SymPyExecutor(BaseQuantumExecutor):
             result[qubit] = sympy.simplify(probability * shots)
         return result
 
-    @staticmethod
-    def _default_random_sequence(num):
-        import random
-        return (random.random() for _ in range(num))
-
-    @staticmethod
-    def step_sequence(num):
-        """
-        dummy "radom" method used for testing.
-        This yields list [0, 1/n, 2/n...], 
-        so you can easily estimate the number of result from shot
-        """
-        return (i / num for i in range(num))
