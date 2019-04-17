@@ -98,3 +98,8 @@ def test_qexperiment_numpy():
             Qubit('111'): 128,
             }
 
+def test_qexperiment_numpy_random():
+    c = H(2)*H(1)*H(0)*Qubit('000')
+    executor = ClassicalSimulationExecutor()
+    result = qexperiment(c, 612, executor)
+    assert 612 == sum((x for x in result.values()))
