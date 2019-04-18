@@ -150,25 +150,28 @@ class NumpySimulator(BaseSimulator):
         """
         return self.state
 
+    def to_coefficients(self, eps=1e-10):
+        """
+        Returns dict {state : coefficients}.
+        state is a string of bit patterns
+        """
+        result = {}
+        FORMAT = "{:0%db}" % self.n  # like "{04b} for 4 bits
+        for ind in range(self.dim):
+            val = self.state[ind]
+            if abs(val) < eps:
+                continue
+            result[FORMAT.format(ind)] = val
+        return result
+
     def __str__(self,eps=1e-10):
         """
         Return bra-ket representation of current quantum state (very slow when n is large)
         @param eps : ignore amplitude smaller than eps when we convert state to str
         @return string representation of quantum states
         """
-        fst = True
-        ret = ""
-        for ind in range(self.dim):
-            val = self.state[ind]
-            if(abs(val)<eps):
-                continue
-            else:
-                if(fst):
-                    fst = False
-                else:
-                    ret += " + "
-                ret += str(val) + "|" + format(ind,"b").zfill(self.n)[::-1]+ ">"
-        return ret
+        pairs = self.to_coefficients()
+        return " + ".join(["{}|{}>".format(v, k) for k, v in pairs.items()])
 
     def __bound(self,ind):
         """
