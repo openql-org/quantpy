@@ -39,8 +39,19 @@ class IBMQExecutor(BaseQuantumExecutor):
         self.shots = shots
         self.extra_args = options.get('qiskit_options', {})
 
+    def experiment(self, circuit, shots, **options):
+        # ``shots`` is duplicate with self.shots. so copy it while execution
+        _shots = self.shots
+        try:
+            self.shots = shots
+            job = self.execute(circuit, **options)
+            return job.result().get_counts()
+        finally:
+            self.shots = _shots
+
     def execute(self, circuit, **options):
         """
+                execute the circuit and return job object
                 The following options are valid:
 
                 * ``with_measure``: qapply with measure flag
@@ -52,7 +63,7 @@ class IBMQExecutor(BaseQuantumExecutor):
         try:
             from qiskit import execute
             job = execute(quantum_circuit, backend=self.backend, shots=self.shots, **self.extra_args)
-            return job.result().get_counts()
+            return job
         except qiskit.QiskitError as ex:
             print("error:", ex.args)
-            return
+            return None
