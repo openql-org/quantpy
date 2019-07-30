@@ -8,6 +8,7 @@ import sympy
 
 from quantpy.sympy.executor._base_quantum_executor import BaseQuantumExecutor
 from quantpy.sympy.executor.simulator.numpy_simulator import NumpySimulator
+import quantpy.sympy
 
 def _default_random_sequence(num):
     import random
@@ -60,16 +61,17 @@ class ClassicalSimulationExecutor(BaseQuantumExecutor):
                 control = tuple(gate.args[0])[0]
                 target_gate = gate.args[1] 
 
-                if type(gate) in GATE_TO_STR:
+                if isinstance(target_gate, sympy.physics.quantum.gate.IdentityGate):
+                    continue
+
+                if type(target_gate) in GATE_TO_STR:
                     # C-"simple" gate
-                    self.simulator.apply(GATE_TO_STR[type(gate)],
+                    self.simulator.apply(GATE_TO_STR[type(target_gate)],
                                          int(target_gate.args[0]), control=control)
 
-                elif isinstance(gate.args[1], quantpy.sympy.Rk):
-                    c = tuple(gate.args[0])[0]
-                    r = gate.args[1]
-                    k = r.k
-                    qasm += 'cu1(pi/{}) qr[{}], qr[{}];\n'.format(k, c, t)
+                elif isinstance(target_gate, quantpy.sympy.Rk):
+                    k = gate.args[1].k
+                    self.simulator.apply('u', int(target_gate.args[0]), param=(1, float(k/2), float(k/2)))
                 else:
                     assert False, '{} it is not a gate operator, nor is a supported operator'.format(repr(gate))
             else:
