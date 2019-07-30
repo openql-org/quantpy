@@ -16,7 +16,6 @@ from quantpy.sympy.executor.classical_simulation_executor import ClassicalSimula
 
 ERR = 1e-9
 def normalize(values):
-    print(f"c:{values}")
     e = None
     for c in values:
         if abs(c) < ERR:
@@ -29,10 +28,8 @@ def normalize(values):
 
 def same_state(state_numpy, state_sympy):
     # fix global phase
-    print(f"numpy:{state_numpy}")
-    print(f"sympy:{state_sympy}")
-    n = normalize([ state_numpy.get(f'{x:02b}', 0) for x in range(4)])
-    s = normalize([ sympy_qapply(QubitBra(f'{x:02b}') * state_sympy).doit() for x in range(4) ])
+    n = normalize([ state_numpy.get('{:02b}'.format(x), 0) for x in range(4)])
+    s = normalize([ sympy_qapply(QubitBra('{:02b}'.format(x)) * state_sympy).doit() for x in range(4) ])
     for i in range(4):
         if abs(n - s) > ERR:
             return False
