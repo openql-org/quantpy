@@ -4,14 +4,11 @@
 
 from collections import defaultdict
 import numpy as np
-from qiskit import QuantumCircuit, transpiler
-from qiskit.qasm import Qasm
-from qiskit.providers.builtinsimulators import QasmSimulatorPy
-from qiskit.converters import circuits_to_qobj
-from qiskit.qobj import qobj_to_dict
+import sympy
 
 from quantpy.sympy.executor._base_quantum_executor import BaseQuantumExecutor
 from quantpy.sympy.executor.simulator.numpy_simulator import NumpySimulator
+import quantpy.sympy
 
 def _default_random_sequence(num):
     import random
@@ -23,95 +20,64 @@ class ClassicalSimulationExecutor(BaseQuantumExecutor):
         super().__init__()
         self.simulator = None
 
-
     def execute(self, circuit, **options):
-        """
-        Execute sympy-circuit with classical simulator
-        We use numpy simulator as default
-        @param circuit sympy object to simulate
-        """
-        qasm = self.to_qasm(circuit)
         self.simulator = NumpySimulator()
-        basis_gates_str = (",".join(self.simulator.basis_gates)).lower()
-        # the following one-line compilation ignores basis_gates, and returnes "u2" for "h".
-        quantum_circuit = QuantumCircuit.from_qasm_str(qasm)
-        circuit = transpiler.transpile(quantum_circuit, basis_gates=basis_gates_str, backend=QasmSimulatorPy())
-        qobj = circuits_to_qobj(circuit, QasmSimulatorPy())
-        json = qobj_to_dict(qobj)["experiments"][0]
-        self.simulate(json)
-        return self.simulator.to_coefficients()
+        qubit = circuit.args[-1]
+        assert isinstance(qubit, sympy.physics.quantum.qubit.Qubit), 'Sorry. Now, U*U*U*Qubit format is only supported'
 
-    def simulate(self, circuitJson):
-        """
-        Simulate qasm script with json format
-        @param circuitJson qasm in json format
-        """
+        self.simulator.initialize(qubit.dimension)
 
-        sim = self.simulator
+        # set initial qubit value
+        for i, qb in enumerate(reversed(qubit.args)):
+            if isinstance(qb, sympy.numbers.One):
+                self.simulator.apply('x', i)
 
-        numQubit = circuitJson["header"]["n_qubits"]
-        sim.initialize(numQubit)
-
-        if "clbit_labels" in circuitJson["header"].keys():
-            numBit = len(circuitJson["header"]["clbit_labels"])
-            clbitsArray = np.zeros(numBit)
-
-        for operation in circuitJson["instructions"]:
-
-            gateOps = operation["name"]
-
-            if not self.simulator.can_simulate_gate(gateOps):
-                print(" !!! {} is not supported !!!".format(gateOps))
-                print(operation)
+        # main loop
+        GATE_TO_STR = {
+                sympy.physics.quantum.gate.HadamardGate: 'h',
+                sympy.physics.quantum.gate.XGate: 'x',
+                sympy.physics.quantum.gate.YGate: 'y',
+                sympy.physics.quantum.gate.ZGate: 'z',
+                sympy.physics.quantum.gate.PhaseGate: 's',
+                sympy.physics.quantum.gate.TGate: 't',
+                }
+        for gate in reversed(circuit.args[:-1]):
+            if isinstance(gate, sympy.physics.quantum.gate.IdentityGate):
                 continue
 
-            gateTargets = operation["qubits"]
+            if type(gate) in GATE_TO_STR:
+                # gate without parameters
+                self.simulator.apply(GATE_TO_STR[type(gate)], int(gate.args[0]))
 
-            if "conditional" in operation.keys():
-                condition = operation["conditional"]
-                condVal = int(condition["val"], 0)
-                condMask = int(condition["mask"], 0)
-                flag = True
-                for ind in range(numBit):
-                    if ((condMask >> ind) % 2 == 1):
-                        flag = flag and (condVal % 2 == clbitsArray[ind])
-                        condVal //= 2
-                if (not flag):
+            elif isinstance(gate, sympy.physics.quantum.gate.CNotGate):
+                self.simulator.apply('cx', int(gate.args[0]), int(gate.args[1]))
+
+            elif isinstance(gate, sympy.physics.quantum.gate.SwapGate):
+                self.simulator.apply('cx', int(gate.args[0]), int(gate.args[1]))
+                self.simulator.apply('cx', int(gate.args[1]), int(gate.args[0]))
+                self.simulator.apply('cx', int(gate.args[0]), int(gate.args[1]))
+
+            elif isinstance(gate, sympy.physics.quantum.gate.CGate):
+                control = tuple(gate.args[0])[0]
+                target_gate = gate.args[1] 
+
+                if isinstance(target_gate, sympy.physics.quantum.gate.IdentityGate):
                     continue
 
-            if "memory" in operation.keys():
-                measureTargets = operation["memory"]
+                if type(target_gate) in GATE_TO_STR:
+                    # C-"simple" gate
+                    self.simulator.apply(GATE_TO_STR[type(target_gate)],
+                                         int(target_gate.args[0]), control=control)
 
-            if "params" in operation.keys():
-                params = operation["params"]
-
-            # unparameterized gates
-            if (gateOps in ["x", "y", "z", "h", "s", "t", "cx", "cz", "CX"]):
-                if (len(gateTargets) == 1):
-                    sim.apply(gateOps, target = gateTargets[0])
-                elif (len(gateTargets) == 2):
-                    sim.apply(gateOps, target = gateTargets[0], control = gateTargets[1])
+                elif isinstance(target_gate, quantpy.sympy.Rk):
+                    k = gate.args[1].k
+                    self.simulator.apply('u', int(target_gate.args[0]), param=(1, float(k/2), float(k/2)))
                 else:
-                    raise ValueError("Too many target qubits")
-
-            # measurement
-            elif (gateOps in ["measure"]):
-                trace = sim.trace()
-                prob = sim.apply("M0", target = gateTargets[0], update=False) / trace
-                if (np.random.rand() < prob):
-                    sim.update()
-                    clbitsArray[measureTargets[0]] = 0
-                else:
-                    sim.apply("M1", target = gateTargets[0])
-                    clbitsArray[measureTargets[0]] = 1
-                sim.normalize()
-
-            # generic unitary operation
-            elif (gateOps in ["U"]):
-                sim.apply("U", target = gateTargets[0], param = params)
-
+                    assert False, '{} it is not a gate operator, nor is a supported operator'.format(repr(gate))
             else:
-                raise ValueError("Op:{} is contained in basis gates, but not supported in simulator".format(operation))
+                assert False, '{} it is not a gate operator, nor is a supported operator'.format(repr(gate))
+
+        return self.simulator.to_coefficients()
 
     def getStateStr(self):
         """
